@@ -1,5 +1,5 @@
 {
-  "name": "bluesky-bot",
+  "name": "bluesky-atproto-api",
   "module": "index.ts",
   "type": "module",
   "devDependencies": {
