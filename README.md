@@ -1,5 +1,7 @@
 # Bluesky Social API
 
+help me here ❤️ : https://patreon.com/benoitpetit
+
 >This project is an interface for interacting with the Bluesky Social API. It is currently under development.
 
 >This project was created for my personal use, but feel free to use it if you wish.
