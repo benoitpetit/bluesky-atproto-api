@@ -1,19 +1,15 @@
-import { describe, it, expect, beforeEach } from 'bun:test';
+import { describe, it, expect } from 'bun:test';
 import { fileExists } from './index';
 
-// Mock fs module
-const mockFs = {
-    existsSync: (path: string) => true,
-};
-
 describe('fileExists', () => {
-    it('should return true when file exists', () => {
-        const result = fileExists('./test.json');
+    it('should return true when checking if package.json exists', () => {
+        // package.json always exists in the project
+        const result = fileExists('./package.json');
         expect(result).toBe(true);
     });
 
-    it('should return false when file does not exist', () => {
-        const result = fileExists('./nonexistent.json');
+    it('should return false for non-existent file', () => {
+        const result = fileExists('./nonexistent-file-12345.json');
         expect(result).toBe(false);
     });
 });
