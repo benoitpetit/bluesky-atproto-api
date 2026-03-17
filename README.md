@@ -9,12 +9,21 @@ help me here ❤️ : https://patreon.com/benoitpetit
 ## Features
 
 - Login to Bluesky Social
+- Session management (resume/save)
 - Retrieve the timeline
 - Retrieve an author's feed
-- Create posts
+- Create posts (with text, labels, media, and polls)
 - Like posts
+- Repost posts
+- Follow/Unfollow users
+- Mute/Unmute users
+- Block/Unblock users
 - Retrieve a user's followers
 - Retrieve the users followed by a user
+- Search for users and posts
+- Get user notifications
+- Update profile (display name, description)
+- Update handle
 
 ## Installation
 
@@ -24,15 +33,21 @@ Install the dependencies with the following command:
 npm install
 ```
 
+Or with Bun:
+
+```bash
+bun install
+```
+
 ## Usage
 
 To use this project, you need to set the following environment variables:
 
 - `BLUESKY_SERVICE`: The URL of the Bluesky service you want to use (default is "https://bluesky.social")
-- `BLUESKY_IDENTIFIER`: Your Bluesky identifier
-- `BLUESKY_PASSWORD`: Your Bluesky password
+- `BLUESKY_IDENTIFIER`: Your Bluesky identifier (e.g., username.bsky.social)
+- `BLUESKY_PASSWORD`: Your Bluesky app password
 
-You can set these variables in a `.env` file at the root of the project.
+You can set these variables in a `.env` file at the root of the project. See `.env.example` for reference.
 
 ## Examples
 
@@ -42,26 +57,98 @@ Here are some examples of how you can use this project:
 // Login to Bluesky Social
 await login(identifier, password);
 
+// Or resume a previous session
+await resumeSession();
+
 // Retrieve the timeline
 const timeline = await getTimeline('', 1, '');
 
 // Retrieve an author's feed
 const feed = await getAuthorFeed("codingben.bsky.social", 10, '', 'posts_no_replies');
 
-// Create a post
-const post = await createPost('test', ['en'], []);
+// Create a simple post
+const post = await createPost('Hello Bluesky!', ['en'], []);
+
+// Create a post with media
+const mediaBuffer = fs.readFileSync('./image.jpg');
+const postWithMedia = await createPost('Check out this image!', ['en'], [], [
+    { mimeType: 'image/jpeg', data: mediaBuffer.buffer }
+]);
+
+// Create a post with a poll
+const pollPost = await createPost('What do you prefer?', ['en'], [], undefined, {
+    options: ['TypeScript', 'JavaScript'],
+    endDate: new Date(Date.now() + 86400000) // 24 hours from now
+});
 
 // Like a post
 const like = await likePost(post.uri, post.cid);
+
+// Repost a post
+const repost = await repost(post.uri, post.cid);
+
+// Follow a user (returns the follow URI needed to unfollow)
+const follow = await agent.follow('user.bsky.social');
+// Later, to unfollow:
+// await unfollow(follow.uri);
+
+// Mute a user
+await muteUser('user.bsky.social');
+
+// Unmute a user
+await unmuteUser('user.bsky.social');
+
+// Block a user
+await blockUser('user.bsky.social');
+
+// Unblock a user
+await unblockUser('user.bsky.social');
 
 // Retrieve a user's followers
 const followers = await getFollowers("codingben.bsky.social", 10, '');
 
 // Retrieve the users followed by a user
 const follows = await getFollows("codingben.bsky.social", 10, '');
+
+// Get user profile
+const profile = await getProfile("codingben.bsky.social");
+
+// Search for users
+const users = await searchUsers("bluesky", 10);
+
+// Search for posts
+const posts = await searchPosts("interesting", 10);
+
+// Get notifications
+const notifications = await getNotifications(20, '');
+
+// Update profile
+await updateProfile("New Display Name", "This is my bio");
+
+// Update handle
+await updateHandle("new-handle.bsky.social");
 ```
 
 ## Development
+
+Run tests:
+
+```bash
+npm test
+```
+
+Or with Bun:
+
+```bash
+bun test
+```
+
+Run typecheck:
+
+```bash
+npm run typecheck
+```
+
 > **this project is a development project for the Bluesky Social API. It is currently under development**
 
 ## License

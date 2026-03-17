@@ -1,5 +1,4 @@
-import { login, resumeSession, getSessionData, getFollows, getTimeline, getAuthorFeed, getProfile, getFollowers, createPost, likePost } from './index';
-import fs from 'fs';
+import { login, resumeSession, getFollows, getTimeline, getAuthorFeed, getProfile, getFollowers, createPost, likePost, repost, unfollow, muteUser, unmuteUser, blockUser, unblockUser, searchUsers, searchPosts, getNotifications, updateProfile, updateHandle } from './index';
 
 // start test
 (async () => {
@@ -17,17 +16,9 @@ import fs from 'fs';
         console.log("resume session failed");
         // login to bluesky.social
         await login(identifier, password);
-        // set session data
-        const sessionData = await getSessionData();
-        // write session data to session.json
-        fs.writeFileSync('./session.json', JSON.stringify(sessionData));
         console.log("login success, logged in...");
-        // return
     } else {
         console.log("resume session success, logged in...");
-        // set session data
-        const sessionData = await getSessionData();
-        // return
     }
 
     // EXAMPLES

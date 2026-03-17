@@ -2,6 +2,10 @@
   "name": "bluesky-atproto-api",
   "module": "index.ts",
   "type": "module",
+  "scripts": {
+    "test": "bun test",
+    "typecheck": "tsc --noEmit"
+  },
   "devDependencies": {
     "bun-types": "latest"
   },
