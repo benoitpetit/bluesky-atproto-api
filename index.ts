@@ -429,3 +429,98 @@ export async function uploadBlob(data: Uint8Array, mimeType: string): Promise<{ 
     const result = await agent.uploadBlob(data, { encoding: mimeType });
     return result as unknown as { data: { blob: unknown }; mimeType: string };
 }
+
+/**
+ * get a list of posts by URIs
+ * @param uris array of post URIs
+ * @returns array of posts
+ */
+export async function getPosts(uris: string[]): Promise<PostResponse[]> {
+    const result = await (agent as any).getPosts(uris);
+    return result as unknown as PostResponse[];
+}
+
+/**
+ * get likes for a post
+ * @param uri the post URI
+ * @param limit limit of results
+ * @param cursor cursor for pagination
+ * @returns likes data
+ */
+export async function getLikes(uri: string, limit: number, cursor: string): Promise<{ likes: Array<{ did: string; handle: string; actor: { did: string; handle: string } }>; cursor?: string }> {
+    const result = await (agent as any).getLikes(uri, { limit, cursor });
+    return result as unknown as { likes: Array<{ did: string; handle: string; actor: { did: string; handle: string } }>; cursor?: string };
+}
+
+/**
+ * get who reposted a post
+ * @param uri the post URI
+ * @param limit limit of results
+ * @param cursor cursor for pagination
+ * @returns reposted by data
+ */
+export async function getRepostedBy(uri: string, limit: number, cursor: string): Promise<{ repostedBy: Array<{ did: string; handle: string }>; cursor?: string }> {
+    const result = await (agent as any).getRepostedBy(uri, { limit, cursor });
+    return result as unknown as { repostedBy: Array<{ did: string; handle: string }>; cursor?: string };
+}
+
+/**
+ * get suggested users to follow
+ * @param limit limit of results
+ * @param cursor cursor for pagination
+ * @returns suggestions data
+ */
+export async function getSuggestions(limit: number, cursor: string): Promise<{ suggestions: Array<{ did: string; handle: string; displayName?: string; avatar?: string }>; cursor?: string }> {
+    const result = await (agent as any).getSuggestions(limit, { cursor });
+    return result as unknown as { suggestions: Array<{ did: string; handle: string; displayName?: string; avatar?: string }>; cursor?: string };
+}
+
+/**
+ * get user notifications
+ * @param limit limit of results
+ * @param cursor cursor for pagination
+ * @returns notifications data
+ */
+export async function listNotifications(limit: number, cursor: string): Promise<NotificationsResponse> {
+    const result = await (agent as any).listNotifications({ limit, cursor });
+    return result as unknown as NotificationsResponse;
+}
+
+/**
+ * count unread notifications
+ * @returns count of unread notifications
+ */
+export async function countUnreadNotifications(): Promise<number> {
+    const result = await (agent as any).countUnreadNotifications();
+    return result as unknown as number;
+}
+
+/**
+ * mark notifications as seen
+ * @param seenAt the timestamp to mark as seen
+ * @returns result
+ */
+export async function updateSeenNotifications(seenAt: string): Promise<{ count: number }> {
+    const result = await (agent as any).updateSeenNotifications(seenAt);
+    return result as unknown as { count: number };
+}
+
+/**
+ * resolve a handle to DID
+ * @param handle the handle to resolve
+ * @returns DID
+ */
+export async function resolveHandle(handle: string): Promise<{ did: string }> {
+    const result = await (agent as any).resolveHandle(handle);
+    return result as unknown as { did: string };
+}
+
+/**
+ * update user handle
+ * @param handle the new handle
+ * @returns result
+ */
+export async function updateHandle(handle: string): Promise<ActionResponse> {
+    const result = await (agent as any).updateHandle(handle);
+    return result as unknown as ActionResponse;
+}
