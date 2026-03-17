@@ -1,4 +1,4 @@
-import { login, resumeSession, getFollows, getTimeline, getAuthorFeed, getProfile, getFollowers, createPost, likePost, repost, unfollow, muteUser, unmuteUser, blockUser, unblockUser, searchUsers, searchPosts, getNotifications, updateProfile, updateHandle } from './index';
+import { login, resumeSession, getFollows, getTimeline, getAuthorFeed, getProfile, getFollowers, createPost, likePost, repost, unfollow, muteUser, unmuteUser } from './index';
 
 // start test
 (async () => {

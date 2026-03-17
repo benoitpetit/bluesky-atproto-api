@@ -245,23 +245,19 @@ export interface MediaAttachment {
  * @param langs langs for post
  * @param labels labels for post
  * @param media optional array of media attachments
- * @param poll optional poll configuration
  * @returns post
  */
 export async function createPost(
     text: string, 
     langs: string[], 
     labels: string[],
-    media?: MediaAttachment[],
-    poll?: {
-        options: string[];
-        endDate: Date;
-    }
+    media?: MediaAttachment[]
 ): Promise<PostResponse> {
     // Build post record
     const record: AppBskyFeedPost.Record = {
         text,
         langs,
+        createdAt: new Date().toISOString(),
     };
 
     // Handle media attachments
@@ -269,7 +265,7 @@ export async function createPost(
         const uploadedBlobs = await Promise.all(
             media.map(async (m) => {
                 const blob = await agent.uploadBlob(m.data, { 
-                    mimeType: m.mimeType 
+                    encoding: m.mimeType 
                 });
                 return blob;
             })
@@ -281,18 +277,6 @@ export async function createPost(
                 alt: `Image ${index + 1}`,
                 image: blob.data.blob,
             }))
-        };
-    }
-
-    // Handle poll
-    if (poll && poll.options.length > 0) {
-        record.embed = {
-            $type: "app.bsky.embed.poll",
-            pods: poll.options.map(option => ({ 
-                name: option,
-                votes: 0 
-            })),
-            endDate: poll.endDate.toISOString()
         };
     }
 
@@ -381,91 +365,5 @@ export async function muteUser(actor: string): Promise<ActionResponse> {
  */
 export async function unmuteUser(actor: string): Promise<ActionResponse> {
     const result = await agent.unmute(actor);
-    return result as unknown as ActionResponse;
-}
-
-/**
- * block a user
- * @param uri the URI of the actor to block
- * @returns block action result
- */
-export async function blockUser(uri: string): Promise<ActionResponse> {
-    const result = await agent.block(uri);
-    return result as unknown as ActionResponse;
-}
-
-/**
- * unblock a user
- * @param uri the URI of the block to remove
- * @returns unblock action result
- */
-export async function unblockUser(uri: string): Promise<ActionResponse> {
-    const result = await agent.unblock(uri);
-    return result as unknown as ActionResponse;
-}
-
-/**
- * search for users
- * @param query search query
- * @param limit maximum number of results
- * @returns search results
- */
-export async function searchUsers(query: string, limit: number): Promise<SearchUsersResponse> {
-    const result = await agent.searchUsers({
-        term: query,
-        limit
-    });
-    return result as unknown as SearchUsersResponse;
-}
-
-/**
- * search for posts
- * @param query search query
- * @param limit maximum number of results
- * @returns search results
- */
-export async function searchPosts(query: string, limit: number): Promise<SearchPostsResponse> {
-    const result = await agent.searchPosts({
-        q: query,
-        limit
-    });
-    return result as unknown as SearchPostsResponse;
-}
-
-/**
- * get user notifications
- * @param limit maximum number of notifications
- * @param cursor cursor for pagination
- * @returns notifications
- */
-export async function getNotifications(limit: number, cursor: string): Promise<NotificationsResponse> {
-    const result = await agent.listNotifications({
-        limit,
-        cursor
-    });
-    return result as unknown as NotificationsResponse;
-}
-
-/**
- * update user profile
- * @param displayName new display name
- * @param description new bio/description
- * @returns updated profile
- */
-export async function updateProfile(displayName?: string, description?: string): Promise<ProfileResponse> {
-    const result = await agent.updateProfile({
-        displayName,
-        description
-    });
-    return result as unknown as ProfileResponse;
-}
-
-/**
- * update user handle
- * @param handle new handle (must be a valid DNS handle)
- * @returns update result
- */
-export async function updateHandle(handle: string): Promise<ActionResponse> {
-    const result = await agent.updateHandle(handle);
     return result as unknown as ActionResponse;
 }

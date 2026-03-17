@@ -12,18 +12,13 @@ help me here ❤️ : https://patreon.com/benoitpetit
 - Session management (resume/save)
 - Retrieve the timeline
 - Retrieve an author's feed
-- Create posts (with text, labels, media, and polls)
+- Create posts (with text, labels, and media)
 - Like posts
 - Repost posts
 - Follow/Unfollow users
 - Mute/Unmute users
-- Block/Unblock users
 - Retrieve a user's followers
 - Retrieve the users followed by a user
-- Search for users and posts
-- Get user notifications
-- Update profile (display name, description)
-- Update handle
 
 ## Installation
 
@@ -72,14 +67,8 @@ const post = await createPost('Hello Bluesky!', ['en'], []);
 // Create a post with media
 const mediaBuffer = fs.readFileSync('./image.jpg');
 const postWithMedia = await createPost('Check out this image!', ['en'], [], [
-    { mimeType: 'image/jpeg', data: mediaBuffer.buffer }
+    { mimeType: 'image/jpeg', data: mediaBuffer }
 ]);
-
-// Create a post with a poll
-const pollPost = await createPost('What do you prefer?', ['en'], [], undefined, {
-    options: ['TypeScript', 'JavaScript'],
-    endDate: new Date(Date.now() + 86400000) // 24 hours from now
-});
 
 // Like a post
 const like = await likePost(post.uri, post.cid);
@@ -98,12 +87,6 @@ await muteUser('user.bsky.social');
 // Unmute a user
 await unmuteUser('user.bsky.social');
 
-// Block a user
-await blockUser('user.bsky.social');
-
-// Unblock a user
-await unblockUser('user.bsky.social');
-
 // Retrieve a user's followers
 const followers = await getFollowers("codingben.bsky.social", 10, '');
 
@@ -112,21 +95,6 @@ const follows = await getFollows("codingben.bsky.social", 10, '');
 
 // Get user profile
 const profile = await getProfile("codingben.bsky.social");
-
-// Search for users
-const users = await searchUsers("bluesky", 10);
-
-// Search for posts
-const posts = await searchPosts("interesting", 10);
-
-// Get notifications
-const notifications = await getNotifications(20, '');
-
-// Update profile
-await updateProfile("New Display Name", "This is my bio");
-
-// Update handle
-await updateHandle("new-handle.bsky.social");
 ```
 
 ## Development
