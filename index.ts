@@ -367,3 +367,65 @@ export async function unmuteUser(actor: string): Promise<ActionResponse> {
     const result = await agent.unmute(actor);
     return result as unknown as ActionResponse;
 }
+
+/**
+ * follow a user
+ * @param actor the user to follow
+ * @returns follow action result with uri
+ */
+export async function follow(actor: string): Promise<ActionResponse> {
+    const result = await agent.follow(actor);
+    return result as unknown as ActionResponse;
+}
+
+/**
+ * delete a post
+ * @param uri uri of the post to delete
+ * @returns delete action result
+ */
+export async function deletePost(uri: string): Promise<ActionResponse> {
+    const result = await agent.deletePost(uri);
+    return result as unknown as ActionResponse;
+}
+
+/**
+ * delete a like
+ * @param uri uri of the like to delete
+ * @returns delete action result
+ */
+export async function deleteLike(uri: string): Promise<ActionResponse> {
+    const result = await agent.deleteLike(uri);
+    return result as unknown as ActionResponse;
+}
+
+/**
+ * delete a repost
+ * @param uri uri of the repost to delete
+ * @returns delete action result
+ */
+export async function deleteRepost(uri: string): Promise<ActionResponse> {
+    const result = await agent.deleteRepost(uri);
+    return result as unknown as ActionResponse;
+}
+
+/**
+ * get a single post by URI
+ * @param uri the URI of the post
+ * @returns post data
+ */
+export async function getPost(uri: string): Promise<PostResponse> {
+    // Using type assertion to work with the API
+    const result = await (agent as any).getPost(uri);
+    return result as unknown as PostResponse;
+}
+
+/**
+ * upload a blob (image/video)
+ * @param data the binary data
+ * @param mimeType the MIME type
+ * @returns uploaded blob
+ */
+export async function uploadBlob(data: Uint8Array, mimeType: string): Promise<{ data: { blob: unknown }; mimeType: string }> {
+    const result = await agent.uploadBlob(data, { encoding: mimeType });
+    return result as unknown as { data: { blob: unknown }; mimeType: string };
+}
