@@ -12,16 +12,22 @@ help me here ❤️ : https://liberapay.com/devbyben/donate
 - Session management (resume/save)
 - Retrieve the timeline
 - Retrieve an author's feed
-- Get a single post
+- Get a single post / multiple posts
 - Create posts (with text, labels, and media)
 - Delete posts
-- Like posts
+- Like posts / Get likes
 - Delete likes
-- Repost posts
+- Repost posts / Get who reposted
 - Delete reposts
 - Follow/Unfollow users
 - Mute/Unmute users
 - Upload blobs (media)
+- Get suggested users to follow
+- Get user notifications
+- Count unread notifications
+- Mark notifications as seen
+- Resolve handle to DID
+- Update user handle
 - Retrieve a user's followers
 - Retrieve the users followed by a user
 
