@@ -1,6 +1,6 @@
 # Bluesky Social API
 
-help me here ❤️ : https://patreon.com/benoitpetit
+help me here ❤️ : https://liberapay.com/devbyben/donate
 
 >This project is an interface for interacting with the Bluesky Social API. It is currently under development.
 
