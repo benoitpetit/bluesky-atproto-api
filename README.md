@@ -12,11 +12,16 @@ help me here ❤️ : https://patreon.com/benoitpetit
 - Session management (resume/save)
 - Retrieve the timeline
 - Retrieve an author's feed
+- Get a single post
 - Create posts (with text, labels, and media)
+- Delete posts
 - Like posts
+- Delete likes
 - Repost posts
+- Delete reposts
 - Follow/Unfollow users
 - Mute/Unmute users
+- Upload blobs (media)
 - Retrieve a user's followers
 - Retrieve the users followed by a user
 
