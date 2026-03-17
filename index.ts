@@ -148,11 +148,12 @@ const agent = new BskyAgent({
 });
 
 export async function getTimeline(algorithm: string, limit: number, cursor: string): Promise<TimelineResponse> {
-    return await agent.getTimeline({
+    const result = await agent.getTimeline({
         algorithm,
         limit,
         cursor,
-    }) as TimelineResponse;
+    });
+    return result as unknown as TimelineResponse;
 }
 
 /**
@@ -161,7 +162,8 @@ export async function getTimeline(algorithm: string, limit: number, cursor: stri
 export async function resumeSession(): Promise<boolean> {
     if (fileExists(SESSION_FILE_PATH)) {
         const sessionData = JSON.parse(fs.readFileSync(SESSION_FILE_PATH, 'utf8'));
-        return await agent.resumeSession(sessionData) as boolean;
+        const result = await agent.resumeSession(sessionData);
+        return result.success;
     }
     return false;
 }
@@ -199,9 +201,10 @@ export async function login(identifier: string, password: string): Promise<void>
  * @returns actor profile
  */
 export async function getProfile(actor: string): Promise<ProfileResponse> {
-    return await agent.getProfile({ 
+    const result = await agent.getProfile({ 
         actor
-    }) as ProfileResponse;
+    });
+    return result as unknown as ProfileResponse;
 }
 
 /**
@@ -221,18 +224,19 @@ export async function getSessionData(): Promise<AtpSessionData | undefined> {
  * @returns post feed
  */
 export async function getAuthorFeed(actor: string, limit: number, cursor: string, filter: string): Promise<FeedResponse> {
-    return await agent.getAuthorFeed({
+    const result = await agent.getAuthorFeed({
         actor,
         limit,
         cursor,
         filter
-    }) as FeedResponse;
+    });
+    return result as unknown as FeedResponse;
 }
 
 // Media type for post attachments
 export interface MediaAttachment {
     mimeType: string;
-    data: ArrayBuffer;
+    data: Uint8Array;
 }
 
 /**
@@ -254,23 +258,10 @@ export async function createPost(
         endDate: Date;
     }
 ): Promise<PostResponse> {
-    const postObj: {
-        text: string;
-        langs?: string[];
-        labels?: {
-            $type: string;
-            self: boolean;
-            labels: string[];
-        };
-        embed?: unknown;
-    } = {
+    // Build post record
+    const record: AppBskyFeedPost.Record = {
         text,
         langs,
-        labels: {
-            $type: "SelfLabels",
-            self: true,
-            labels
-        }
     };
 
     // Handle media attachments
@@ -284,7 +275,7 @@ export async function createPost(
             })
         );
         
-        postObj.embed = {
+        record.embed = {
             $type: "app.bsky.embed.images",
             images: uploadedBlobs.map((blob, index) => ({
                 alt: `Image ${index + 1}`,
@@ -295,7 +286,7 @@ export async function createPost(
 
     // Handle poll
     if (poll && poll.options.length > 0) {
-        postObj.embed = {
+        record.embed = {
             $type: "app.bsky.embed.poll",
             pods: poll.options.map(option => ({ 
                 name: option,
@@ -305,7 +296,8 @@ export async function createPost(
         };
     }
 
-    return await agent.post(postObj) as PostResponse;
+    const result = await agent.post(record);
+    return result as unknown as PostResponse;
 }
 
 /**
@@ -315,7 +307,8 @@ export async function createPost(
  * @returns post
  */
 export async function likePost(uri: string, cid: string): Promise<LikeResponse> {
-    return await agent.like(uri, cid) as LikeResponse;
+    const result = await agent.like(uri, cid);
+    return result as unknown as LikeResponse;
 }
 
 /**
@@ -326,11 +319,12 @@ export async function likePost(uri: string, cid: string): Promise<LikeResponse> 
  * @returns followers of user
  */
 export async function getFollowers(actor: string, limit: number, cursor: string): Promise<FollowersResponse> {
-    return await agent.getFollowers({
+    const result = await agent.getFollowers({
         actor,
         limit,
         cursor
-    }) as FollowersResponse;
+    });
+    return result as unknown as FollowersResponse;
 }
 
 /**
@@ -341,11 +335,12 @@ export async function getFollowers(actor: string, limit: number, cursor: string)
  * @returns follows of user
  */
 export async function getFollows(actor: string, limit: number, cursor: string): Promise<FollowsResponse> {
-    return await agent.getFollows({
+    const result = await agent.getFollows({
         actor,
         limit,
         cursor
-    }) as FollowsResponse;
+    });
+    return result as unknown as FollowsResponse;
 }
 
 /**
@@ -355,7 +350,8 @@ export async function getFollows(actor: string, limit: number, cursor: string): 
  * @returns repost action result
  */
 export async function repost(uri: string, cid: string): Promise<ActionResponse> {
-    return await agent.repost(uri, cid) as ActionResponse;
+    const result = await agent.repost(uri, cid);
+    return result as unknown as ActionResponse;
 }
 
 /**
@@ -364,7 +360,8 @@ export async function repost(uri: string, cid: string): Promise<ActionResponse> 
  * @returns unfollow action result
  */
 export async function unfollow(uri: string): Promise<ActionResponse> {
-    return await agent.unfollow(uri) as ActionResponse;
+    const result = await agent.deleteFollow(uri);
+    return result as unknown as ActionResponse;
 }
 
 /**
@@ -373,7 +370,8 @@ export async function unfollow(uri: string): Promise<ActionResponse> {
  * @returns mute action result
  */
 export async function muteUser(actor: string): Promise<ActionResponse> {
-    return await agent.mute(actor) as ActionResponse;
+    const result = await agent.mute(actor);
+    return result as unknown as ActionResponse;
 }
 
 /**
@@ -382,25 +380,28 @@ export async function muteUser(actor: string): Promise<ActionResponse> {
  * @returns unmute action result
  */
 export async function unmuteUser(actor: string): Promise<ActionResponse> {
-    return await agent.unmute(actor) as ActionResponse;
+    const result = await agent.unmute(actor);
+    return result as unknown as ActionResponse;
 }
 
 /**
  * block a user
- * @param actor the user to block
+ * @param uri the URI of the actor to block
  * @returns block action result
  */
-export async function blockUser(actor: string): Promise<ActionResponse> {
-    return await agent.block(actor) as ActionResponse;
+export async function blockUser(uri: string): Promise<ActionResponse> {
+    const result = await agent.block(uri);
+    return result as unknown as ActionResponse;
 }
 
 /**
  * unblock a user
- * @param actor the user to unblock
+ * @param uri the URI of the block to remove
  * @returns unblock action result
  */
-export async function unblockUser(actor: string): Promise<ActionResponse> {
-    return await agent.unblock(actor) as ActionResponse;
+export async function unblockUser(uri: string): Promise<ActionResponse> {
+    const result = await agent.unblock(uri);
+    return result as unknown as ActionResponse;
 }
 
 /**
@@ -410,10 +411,11 @@ export async function unblockUser(actor: string): Promise<ActionResponse> {
  * @returns search results
  */
 export async function searchUsers(query: string, limit: number): Promise<SearchUsersResponse> {
-    return await agent.searchUsers({
+    const result = await agent.searchUsers({
         term: query,
         limit
-    }) as SearchUsersResponse;
+    });
+    return result as unknown as SearchUsersResponse;
 }
 
 /**
@@ -423,10 +425,11 @@ export async function searchUsers(query: string, limit: number): Promise<SearchU
  * @returns search results
  */
 export async function searchPosts(query: string, limit: number): Promise<SearchPostsResponse> {
-    return await agent.searchPosts({
+    const result = await agent.searchPosts({
         q: query,
         limit
-    }) as SearchPostsResponse;
+    });
+    return result as unknown as SearchPostsResponse;
 }
 
 /**
@@ -436,10 +439,11 @@ export async function searchPosts(query: string, limit: number): Promise<SearchP
  * @returns notifications
  */
 export async function getNotifications(limit: number, cursor: string): Promise<NotificationsResponse> {
-    return await agent.listNotifications({
+    const result = await agent.listNotifications({
         limit,
         cursor
-    }) as NotificationsResponse;
+    });
+    return result as unknown as NotificationsResponse;
 }
 
 /**
@@ -449,10 +453,11 @@ export async function getNotifications(limit: number, cursor: string): Promise<N
  * @returns updated profile
  */
 export async function updateProfile(displayName?: string, description?: string): Promise<ProfileResponse> {
-    return await agent.updateProfile({
+    const result = await agent.updateProfile({
         displayName,
         description
-    }) as ProfileResponse;
+    });
+    return result as unknown as ProfileResponse;
 }
 
 /**
@@ -461,5 +466,6 @@ export async function updateProfile(displayName?: string, description?: string):
  * @returns update result
  */
 export async function updateHandle(handle: string): Promise<ActionResponse> {
-    return await agent.updateHandle(handle) as ActionResponse;
+    const result = await agent.updateHandle(handle);
+    return result as unknown as ActionResponse;
 }
